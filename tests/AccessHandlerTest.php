@@ -1,21 +1,34 @@
 <?php
 
 use App\AccessHandler as Access;
-use App\AccessHandler;
-use App\Authenticator as Auth;
 use App\Authenticator;
-use App\SessionManager as Session;
-use App\SessionArrayDriver;
 
-use App\Stubs\AuthenticatorStub;
+use App\User;
 use PHPUnit\Framework\TestCase;
 
 class AccessHandlerTest extends TestCase
 {
 
+    public function tearDown()/* The :void return type declaration that should be here would cause a BC issue */
+    {
+        Mockery::close();
+    }
+
     public function test_grand_access(){
 
-        $auth = new AuthenticatorStub();
+        $user = Mockery::mock(User::class);
+        $user->role = 'admin';
+
+        $auth = Mockery::mock(Authenticator::class);
+
+        $auth->shouldReceive('check')
+            ->once()
+            ->andReturn(true);
+
+        $auth->shouldReceive('user')
+            ->once()
+            ->andReturn($user);
+
         $access = new Access($auth);
 
         $this->assertTrue(
