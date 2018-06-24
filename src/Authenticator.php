@@ -5,7 +5,7 @@ namespace App;
 use App\SessionManager as Session;
 
 
-class Authenticator
+class Authenticator implements AuthenticatorInterface
 {
 
     public $user;

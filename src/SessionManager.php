@@ -19,7 +19,7 @@ class SessionManager
      * SessionManager constructor.
      * @param \App\SessionFileDriver $driver
      */
-    public function __construct(Driver $driver)
+    public function __construct(SessionDriverInterface $driver)
     {
         $this->driver = $driver;
 

@@ -2,21 +2,20 @@
 
 namespace App;
 
-use App\Authenticator as Auth;
 
 class AccessHandler
 {
 
     /**
-     * @var \App\Authenticator
+     * @var \App\AuthenticatorInterface
      */
     protected $auth;
 
     /**
      * AccessHandler constructor.
-     * @param \App\Authenticator $auth
+     * @param AuthenticatorInterface $auth
      */
-    public function __construct(Auth $auth)
+    public function __construct(AuthenticatorInterface $auth)
     {
         $this->auth = $auth;
     }
