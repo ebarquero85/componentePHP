@@ -2,13 +2,28 @@
 
 namespace App;
 
+use App\Authenticator as Auth;
+
 class AccessHandler
 {
 
-    public static function check($role){
+    /**
+     * @var \App\Authenticator
+     */
+    protected $auth;
 
-        return Authenticator::check() && Authenticator::user()->rol === $role;
+    /**
+     * AccessHandler constructor.
+     * @param \App\Authenticator $auth
+     */
+    public function __construct(Auth $auth)
+    {
+        $this->auth = $auth;
+    }
 
+    public function check($role){
+
+        return $this->auth->check() && $this->auth->user()->role === $role;
     }
 
 }

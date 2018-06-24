@@ -2,15 +2,10 @@
 
 namespace App;
 
-
-use function file_exists;
-use function file_get_contents;
-use function json_decode;
-
 class SessionFileDriver
 {
 
-    public static function load()
+    public function load()
     {
 
         $file = __DIR__ .  '/../storage/session/session.json';

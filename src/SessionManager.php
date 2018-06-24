@@ -2,32 +2,45 @@
 
 namespace App;
 
+use App\SessionFileDriver as Driver;
 
 class SessionManager
 {
 
-    protected static $loaded = false;
-    protected static $data = array();
+    protected $loaded = false;
+    protected $data = array();
 
-    public static function get($key)
+    /**
+     * @var \App\SessionFileDriver
+     */
+    private $driver;
+
+    /**
+     * SessionManager constructor.
+     * @param \App\SessionFileDriver $driver
+     */
+    public function __construct(Driver $driver)
+    {
+        $this->driver = $driver;
+
+        $this->load();
+
+    }
+
+    private function load()
     {
 
-        static::load();
+        $this->data = $this->driver->load();
 
-        return isset(static::$data[$key])
-            ? static::$data[$key]
+    }
+
+    public function get($key)
+    {
+
+        return isset($this->data[$key])
+            ? $this->data[$key]
             : null;
 
     }
 
-    private static function load()
-    {
-
-        if(static::$loaded) return true;
-
-        static::$data = SessionFileDriver::load();
-
-        static::$loaded = true;
-
-    }
 }

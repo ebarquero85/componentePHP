@@ -2,29 +2,45 @@
 
 namespace App;
 
+use App\SessionManager as Session;
+
 
 class Authenticator
 {
 
-    public static $user;
+    public $user;
 
-    public static function check()
+    /**
+     * @var \App\SessionManager
+     */
+    private $session;
+
+    /**
+     * Authenticator constructor.
+     * @param \App\SessionManager $session
+     */
+    public function __construct(Session $session)
     {
-
-        return static::user() != null;
+        $this->session = $session;
     }
 
-    public static function user()
+    public function check()
     {
 
-        if (!is_null(static::$user)) {
-            return static::$user;
+        return $this->user() != null;
+    }
+
+    public function user()
+    {
+
+        if ( ! is_null($this->user)) {
+            return $this->user;
         }
 
-        $data = SessionManager::get('user_data');
+        $data = $this->session->get('user_data');
 
-        if(!is_null($data)){
-            return static::$user = new User($data);
+        if( ! is_null($data)){
+            return $this->user = new User($data);
         }
 
         return null;
