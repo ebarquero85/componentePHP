@@ -15,3 +15,11 @@ function view($template, array $vars = array()){
     require $path . 'layout.php';
 
 }
+
+function abort404(){
+
+    http_response_code(404);
+
+    exit();
+
+}
