@@ -1,8 +1,9 @@
 <?php
 
-function view($template, array $vars = array()){
 
-    extract($vars);
+function view($template, array $variables = array()){
+
+    extract($variables);
 
     $path = __DIR__ . '/../views/';
 
@@ -19,7 +20,7 @@ function view($template, array $vars = array()){
 function abort404(){
 
     http_response_code(404);
-
+    view('page404', []);
     exit();
 
 }

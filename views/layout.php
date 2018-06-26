@@ -13,12 +13,12 @@
     <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active"><a class="nav-link" href="index.php">Home</a></li>
-            <?php if($access->check(['student'])): ?>
+<!--            --><?php //if($access->check(['student'])): ?>
             <li class="nav-item"><a class="nav-link" href="students.php">Students</a></li>
-            <?php endif; ?>
-            <?php if($access->check(['teacher'])): ?>
+<!--            --><?php //endif; ?>
+<!--            --><?php //if($access->check(['teacher'])): ?>
             <li class="nav-item"><a class="nav-link" href="teachers.php">Teachers</a></li>
-            <?php endif; ?>
+<!--            --><?php //endif; ?>
         </ul>
     </div>
 </nav>

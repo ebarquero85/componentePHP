@@ -1,2 +1,2 @@
 
-<h2>ERROR: 404</h2>
+<h2 style="color: darkred">ERROR: 404</h2>

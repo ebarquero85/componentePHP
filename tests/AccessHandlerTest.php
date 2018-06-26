@@ -3,6 +3,7 @@
 use App\AccessHandler as Access;
 use App\Authenticator;
 
+use App\Container;
 use App\User;
 use PHPUnit\Framework\TestCase;
 
@@ -33,6 +34,17 @@ class AccessHandlerTest extends TestCase
 
         $this->assertTrue(
             $access->check('admin')
+        );
+
+    }
+
+    public function test_container()
+    {
+
+        $container = New Container();
+
+        $this->assertTrue(
+            Container::getInstance()->access()->check('student')
         );
 
     }
