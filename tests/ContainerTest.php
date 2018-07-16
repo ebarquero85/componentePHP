@@ -39,9 +39,21 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
 
         $container = new Container();
 
-        $container->bind('key','Foo');
 
-        $this->assertInstanceOf('Foo',$container->make('key'));
+        $container->bind('key','stdClass');
+
+        $this->assertInstanceOf('stdClass',$container->make('key'));
+
+    }
+
+    public function test_bind_with_automatic_resolution()
+    {
+
+        $container = new Container();
+
+        $container->bind('foo','Foo');
+
+        $this->assertInstanceOf('Foo',$container->make('foo'));
 
     }
 
@@ -50,6 +62,29 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
 
 
 class Foo{
+
+    public function __construct(Bar $bar)
+    {
+
+    }
+
+}
+
+class Bar{
+
+    public function __construct(FooBar $foobar, Uno $uno)
+    {
+
+    }
+
+
+}
+
+class FooBar{
+
+}
+
+class Uno{
 
 }
 
