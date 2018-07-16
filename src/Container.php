@@ -6,6 +6,7 @@ namespace App;
 use Closure;
 use InvalidArgumentException;
 use ReflectionClass;
+use ReflectionException;
 
 class Container
 {
@@ -33,18 +34,23 @@ class Container
 
     public function make($name)
     {
-        if (isset($this->shared[$name])) {
-            return $this->shared[$name];
-        }
 
+        if (isset($this->shared[$name])) {
+
+            return $this->shared[$name];
+
+        }
 
         $resolver = $this->binding[$name]['resolver'];
 
         if ($resolver instanceof Closure) {
+
             $object = $resolver($this);
+
         } else {
+
             $object = $this->build($resolver);
-            //$object = new $resolver;
+
         }
 
         return $object;
@@ -55,16 +61,26 @@ class Container
     public function build($name)
     {
 
-        $reflection = new ReflectionClass($name);
+        try{
 
-        if(!$reflection->isInstantiable()){
+            $reflection = new ReflectionClass($name);
+
+        }catch (ReflectionException $e){
+
+            throw new ContainerException('No existe la clase');
+
+        }
+
+
+
+        if (!$reflection->isInstantiable()) {
             throw new InvalidArgumentException("La clase {$name} no es instanciable");
         }
 
 
         $constructor = $reflection->getConstructor(); // Devuelve un ReflectionMethod
 
-        if(is_null($constructor)){
+        if (is_null($constructor)) {
             return new $name;
         }
 
@@ -74,9 +90,17 @@ class Container
 
         foreach ($constructorParameters as $constructorParameter) {
 
-            $parameterClassName = $constructorParameter->getClass()->getName();
+            try {
 
-            $arguments[] = $this->build( $parameterClassName);
+                $parameterClassName = $constructorParameter->getClass()->getName();
+
+            } catch (ReflectionException $e) {
+
+                throw new ContainerException("La clase [$name]: " . $e->getMessage(), null, $e);
+
+            }
+
+            $arguments[] = $this->build($parameterClassName);
 
         }
 

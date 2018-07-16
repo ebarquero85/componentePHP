@@ -1,6 +1,7 @@
 <?php
 
 use App\Container;
+use App\ContainerException;
 
 class ContainerTest extends \PHPUnit\Framework\TestCase
 {
@@ -57,6 +58,24 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
 
     }
 
+    /**
+     * @expectedException App\ContainerException
+     *
+     */
+    public function test_bind_with_no_dependecy_class_exist()
+    {
+
+//        $this->expectException(
+//            ContainerException::class
+//        );
+
+        $container = new Container();
+
+        $container->bind('qux','Qux');
+
+        $container->make('qux');
+
+    }
 
 }
 
@@ -72,7 +91,7 @@ class Foo{
 
 class Bar{
 
-    public function __construct(FooBar $foobar, Uno $uno)
+    public function __construct(FooBar $foobar)
     {
 
     }
@@ -84,7 +103,13 @@ class FooBar{
 
 }
 
-class Uno{
+
+class Qux{
+
+    public function __construct(Bazz $bazz)
+    {
+
+    }
 
 }
 
