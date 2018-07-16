@@ -1,68 +1,51 @@
 <?php
+
 namespace App;
 
+
+use Closure;
 
 class Container
 {
 
-    protected static $instance;
+    protected $binding = [];
+    protected $shared = [];
 
-    protected $shared = array();
 
-    public static function getInstance()
+    public function bind($name, $resolver)
     {
 
-        if (static::$instance != null) {
-            return static::$instance;
-        }
-
-        return static::$instance = New Container();
-
-    }
-
-
-    public function session()
-    {
-
-        if (isset($this->shared['session'])) {
-            return $this->shared['session'];
-        }
-
-        $data = [
-            'user_data' => array(
-                'name' => 'Duilio',
-                'role' => 'teacher'
-            )
+        $this->binding[$name] = [
+            'resolver' => $resolver
         ];
 
-        $driver = New SessionArrayDriver($data);
-
-
-        return $this->shared['session'] = New SessionManager($driver);
 
     }
 
-
-    public function auth()
+    public function instance($name, $object)
     {
 
-        if (isset($this->shared['auth'])) {
-            return $this->shared['auth'];
-        }
-
-        return $this->shared['auth'] = New Authenticator($this->session());
+        $this->shared[$name] = $object;
 
     }
 
-
-    public function access()
+    public function make($name)
     {
-
-        if (isset($this->shared['access'])) {
-            return $this->shared['access'];
+        if (isset($this->shared[$name])) {
+            return $this->shared[$name];
         }
 
-        return $this->shared['access'] = new AccessHandler($this->auth());
+
+        $resolver = $this->binding[$name]['resolver'];
+
+        if ($resolver instanceof Closure) {
+            $object = $resolver($this);
+        } else {
+            $object = new $resolver;
+        }
+
+        return $object;
+
 
     }
 
