@@ -77,6 +77,34 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
 
     }
 
+
+    public function test_container_make_with_arguments()
+    {
+
+        $container = new Container();
+
+        $this->assertInstanceOf(
+            MailDummy::class,
+            $container->make('MailDummy', ['url' => 'www.barquero.com', 'key' => 'secret'])
+        );
+        
+    }
+
+}
+
+
+class MailDummy{
+
+
+    private $url;
+    private $key;
+
+    public function __construct($url, $key)
+    {
+        $this->url = $url;
+        $this->key = $key;
+    }
+
 }
 
 

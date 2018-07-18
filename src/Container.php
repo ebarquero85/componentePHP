@@ -32,25 +32,24 @@ class Container
 
     }
 
-    public function make($name)
+    public function make($name, array $arguments = [])
     {
 
         if (isset($this->shared[$name])) {
-
             return $this->shared[$name];
-
         }
 
-        $resolver = $this->binding[$name]['resolver'];
+        if(isset($this->binding[$name])){
+            $resolver = $this->binding[$name]['resolver'];
+        }
+        else{
+            $resolver = $name;
+        }
 
         if ($resolver instanceof Closure) {
-
             $object = $resolver($this);
-
         } else {
-
-            $object = $this->build($resolver);
-
+            $object = $this->build($resolver, $arguments);
         }
 
         return $object;
@@ -58,57 +57,58 @@ class Container
 
     }
 
-    public function build($name)
+    public function build($class, array $arguments = [])
     {
 
         try{
-
-            $reflection = new ReflectionClass($name);
-
+            $reflection = new ReflectionClass($class);
         }catch (ReflectionException $e){
-
             throw new ContainerException('No existe la clase');
-
         }
-
-
 
         if (!$reflection->isInstantiable()) {
-            throw new InvalidArgumentException("La clase {$name} no es instanciable");
+            throw new InvalidArgumentException("La clase {$class} no es instanciable");
         }
-
 
         $constructor = $reflection->getConstructor(); // Devuelve un ReflectionMethod
 
         if (is_null($constructor)) {
-            return new $name;
+            return new $class;
         }
 
         $constructorParameters = $constructor->getParameters(); // Devuelve un arreglo de [ReflectionParameter]
 
-        $arguments = [];
+        $dependencies = [];
 
         foreach ($constructorParameters as $constructorParameter) {
 
-            try {
+            $parameterName = $constructorParameter->getName();
 
-                $parameterClassName = $constructorParameter->getClass()->getName();
-
-            } catch (ReflectionException $e) {
-
-                throw new ContainerException("La clase [$name]: " . $e->getMessage(), null, $e);
-
+            if(isset($arguments[$parameterName])){
+                $dependencies[] = $parameterName;
+                continue;
             }
 
-            $arguments[] = $this->build($parameterClassName);
+            try {
+                $parameterClass = $constructorParameter->getClass();
+            } catch (ReflectionException $e) {
+                throw new ContainerException("La clase [$parameterName]: " . $e->getMessage(), null, $e);
+            }
+
+            if(!is_null($parameterClass)){
+
+                $parameterClassName = $parameterClass->getName();
+                $dependencies[] = $this->build($parameterClassName);
+
+            }else{
+                throw new ContainerException("Please provide the value of the parameter [$parameterName]");
+            }
+
 
         }
 
-
-        return $reflection->newInstanceArgs($arguments);
-
+        return $reflection->newInstanceArgs($dependencies);
 
     }
-
 
 }
