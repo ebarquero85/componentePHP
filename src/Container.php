@@ -2,7 +2,6 @@
 
 namespace App;
 
-
 use Closure;
 use InvalidArgumentException;
 use ReflectionClass;
@@ -15,13 +14,20 @@ class Container
     protected $shared = [];
 
 
-    public function bind($name, $resolver)
+    public function bind($name, $resolver, $shared = false)
     {
 
         $this->binding[$name] = [
-            'resolver' => $resolver
+            'resolver' => $resolver,
+            'shared' => $shared
         ];
 
+    }
+
+    public function singleton($name, $resolver)
+    {
+
+        $this->bind($name,$resolver,true);
 
     }
 
@@ -41,15 +47,21 @@ class Container
 
         if(isset($this->binding[$name])){
             $resolver = $this->binding[$name]['resolver'];
+            $shared = $this->binding[$name]['shared'];
         }
         else{
             $resolver = $name;
+            $shared = false;
         }
 
         if ($resolver instanceof Closure) {
             $object = $resolver($this);
         } else {
             $object = $this->build($resolver, $arguments);
+        }
+
+        if($shared){
+            $this->shared[$name] = $object;
         }
 
         return $object;
