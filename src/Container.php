@@ -13,6 +13,7 @@ class Container
     protected $binding = [];
     protected $shared = [];
 
+    private static $instance;
 
     public function bind($name, $resolver, $shared = false)
     {
@@ -24,18 +25,33 @@ class Container
 
     }
 
-    public function singleton($name, $resolver)
+    public static function getInstance()
     {
 
-        $this->bind($name,$resolver,true);
+        if(static::$instance == null){
+            static::$instance = new Container();
+        }
 
+        return static::$instance;
+
+    }
+
+    public static function setInstance(Container $container)
+    {
+
+        static::$instance = $container;
+        
+    }
+
+
+    public function singleton($name, $resolver)
+    {
+        $this->bind($name,$resolver,true);
     }
 
     public function instance($name, $object)
     {
-
         $this->shared[$name] = $object;
-
     }
 
     public function make($name, array $arguments = [])

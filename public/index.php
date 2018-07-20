@@ -4,7 +4,7 @@ use App\Container;
 
 require __DIR__ . '/../bootstrap/start.php';
 
-$access = Container::getInstance()->access();
+$access = Container::getInstance()->make('access');
 
 view('index', compact('access'));
 
