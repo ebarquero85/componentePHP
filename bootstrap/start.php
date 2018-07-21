@@ -1,10 +1,7 @@
 <?php
 
-use App\AccessHandler;
-use App\Authenticator;
+use App\Application;
 use App\Container;
-use App\SessionArrayDriver;
-use App\SessionManager;
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -15,31 +12,16 @@ $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
 $whoops->register();
 
 
-
 $container = Container::getInstance();
 
 Access::setContainer($container);
 
-$container->bind('session', function(){
+$application = new Application($container);
 
-    $data = [
-        'user_data' => array(
-            'name' => 'Edgard',
-            'role' => 'student'
-        )
-    ];
+//$application->register();
 
-    $driver = new SessionArrayDriver($data);
-    return new SessionManager($driver);
-});
-
-$container->bind('auth', function($container){
-    return new Authenticator($container->make('session'));
-});
-
-$container->bind('access', function($container){
-    return new AccessHandler($container->make('auth'));
-});
-
-//echo '<pre>';
-//die(var_dump($container));
+$application->registerProviders(array(
+    App\Providers\SessionProvider::class,
+    App\Providers\AuthenticatorProvider::class,
+    App\Providers\AccessHandlerProvider::class,
+));

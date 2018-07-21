@@ -38,15 +38,4 @@ class AccessHandlerTest extends TestCase
 
     }
 
-    public function test_container()
-    {
-
-        $container = New Container();
-
-        $this->assertTrue(
-            Container::getInstance()->access()->check('student')
-        );
-
-    }
-
 }
