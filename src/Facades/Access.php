@@ -2,16 +2,15 @@
 
 namespace App\Facades;
 
-use App\Container;
-
-class Access
+class Access extends Facades
 {
 
-    public static function check($roles)
+    public static function getAccessor()
     {
 
-        return Container::getInstance()->make('access')->check($roles);
+        return 'access';
 
     }
+
 
 }

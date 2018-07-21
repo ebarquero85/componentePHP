@@ -15,9 +15,13 @@ $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
 $whoops->register();
 
 
+
 $container = Container::getInstance();
 
+Access::setContainer($container);
+
 $container->bind('session', function(){
+
     $data = [
         'user_data' => array(
             'name' => 'Edgard',
@@ -37,3 +41,5 @@ $container->bind('access', function($container){
     return new AccessHandler($container->make('auth'));
 });
 
+//echo '<pre>';
+//die(var_dump($container));
