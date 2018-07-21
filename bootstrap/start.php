@@ -8,10 +8,11 @@ use App\SessionManager;
 
 require __DIR__ . '/../vendor/autoload.php';
 
+class_alias('App\Facades\Access', 'Access');
+
 $whoops = new \Whoops\Run;
 $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
 $whoops->register();
-
 
 
 $container = Container::getInstance();
@@ -20,7 +21,7 @@ $container->bind('session', function(){
     $data = [
         'user_data' => array(
             'name' => 'Edgard',
-            'role' => 'teacher'
+            'role' => 'student'
         )
     ];
 
